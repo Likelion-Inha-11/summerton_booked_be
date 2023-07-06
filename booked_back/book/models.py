@@ -64,9 +64,15 @@ class BookReview(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    like=models.ManyToManyField(Profile,related_name='likes',blank=True)
+    pickpage=models.CharField(max_length=255,null=True,blank=True)
+    pickwriting=models.CharField(max_length=255,null=True,blank=True)
     
     def __str__(self):
         return self.review_title
+    
+    def get_like_count(self):
+        return self.like.count()
     
     def save(self, *args, **kwargs):
         if not self.pk:
