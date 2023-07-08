@@ -17,10 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from user.views import SignupAPIView, LoginAPIView
+from community.views import PostAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('signup/', SignupAPIView.as_view(), name='signup'),
     path('login/', LoginAPIView.as_view(), name='login'),
+    path('posts/', PostAPI.as_view(), name='post_api'),
+    path('posts/create/', PostAPI.as_view(), name='post_create_api'),
+    path('posts/<int:pk>/', PostAPI.as_view(), name='post_detail_api'),
+    path('posts/<int:pk>/update/', PostAPI.as_view(), name='post_update_api'),
+    path('posts/<int:pk>/delete/', PostAPI.as_view(), name='post_delete_api'),
     #path('login/', Login.as_view()),
 ]
