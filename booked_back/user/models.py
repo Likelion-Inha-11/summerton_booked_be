@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager,User
 
 class MyUserManager(BaseUserManager):
     def create_user(self, userID, password=None, **extra_fields):
@@ -20,6 +20,8 @@ class Profile(AbstractBaseUser):
     password = models.CharField(max_length=20)
     nickname = models.CharField(max_length=15)
     user_mbti = models.CharField(max_length=4)
+    #user = models.OneToOneField(User, on_delete=models.CASCADE)  # 새로 추가된 user 필드
+
 
     # 필요한 추가 필드를 여기에 추가할 수 있습니다.
 
