@@ -47,8 +47,7 @@ class Book(models.Model):
     fellings = models.ManyToManyField(Feeling, through='FillingCount', related_name='books')
     def __str__(self):
         return self.title
-    #user_mbti = models.ManyToManyField(Profile, through='UserMBTICount', related_name='books')
-    
+    #user_mbti = models.ManyToManyField(Profile, through='UserMBTICount', related_name='books')   
     
 class BookReview(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='reviews')
@@ -100,6 +99,13 @@ class BookReview(models.Model):
         jp_count.mention_count = BookReview.objects.filter(book=self.book, jp=self.jp).count()
         jp_count.save()
         
+    def toggle_like(self, user):
+        if user in self.like.all():
+            self.like.remove(user)
+        else:
+            self.like.add(user)
+    
+        
         
     # BookReview 모델의 post_save 시그널 리시버
 @receiver(post_save, sender=BookReview)
@@ -124,7 +130,7 @@ def update_genre_count(sender, instance, created, **kwargs):
         jp_count, _ = JPCount.objects.get_or_create(book=instance.book, category=instance.jp)
         jp_count.mention_count = BookReview.objects.filter(book=instance.book, jp=instance.jp).count()
         jp_count.save()
-
+        
 class FillingCount(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     category = models.ForeignKey(Feeling, on_delete=models.CASCADE)
@@ -171,6 +177,7 @@ class NSCount(models.Model):
 
     class Meta:
         verbose_name_plural = "NS Counts"
+        
     
     
 class FTCount(models.Model):
@@ -201,3 +208,5 @@ class JPCount(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     category = models.ForeignKey(Profile, on_delete=models.CASCADE)
     mention_count = models.IntegerField(default=0)'''
+    
+    

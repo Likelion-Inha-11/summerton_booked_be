@@ -54,7 +54,25 @@ class BookReviewAPI(APIView):
         serializer = BookReviewSerializer(book_reviews, many=True)
         return Response(serializer.data, status=200)
     
+class BookReviewDetailAPI(APIView):
+    # 독후감 상서젱보 불러오기
+    def get(self, request,pk,format=None):
+
+        book_reviews = BookReview.objects.filter(pk=pk)
+        serializer = BookReviewSerializer(book_reviews, many=True)
+        return Response(serializer.data, status=200)
     
+    #좋아요
+    def post(self, request, pk, format=None):
+        profile = request.user
+        if not profile:
+            return Response({'error': 'User profile not found'}, status=400)
+
+        book_review = get_object_or_404(BookReview, pk=pk)
+        book_review.toggle_like(profile)
+
+        return Response({'message': 'Current Like: '+str(book_review.like.count())}, status=200)
+        
 class BookReviewUDAPI(APIView):
     # 수정할 독후감 불러오기
     def get(self, request,pk,format=None):
@@ -107,6 +125,7 @@ class BookReviewUDAPI(APIView):
         book_review.save()
 
         return Response({'message': 'Book review updated successfully'}, status=200)
+    
 
 class BookReviewDeleteAPI(APIView):
     # 독후감 삭제
