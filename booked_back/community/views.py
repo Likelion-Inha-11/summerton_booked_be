@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Post,Comment
 from .serializers import PostSerializer, CommentSerializer
+from book.models import BookReview
+from book.serializers import BookReviewSerializer
 # Create your views here.
 
 
@@ -10,9 +12,16 @@ from .serializers import PostSerializer, CommentSerializer
 class AllPostAPI(APIView):
     def get(self, request):
         post = Post.objects.all()
-
+        
+        #독후감 랜덤으로 5개 가져오기
+        reviews=BookReview.objects.order_by('?')[:4]
         postserializer = PostSerializer(post, many=True)
-        return Response(postserializer.data, status=200)
+        reviewserializer=BookReviewSerializer(reviews,many=True)
+        data={
+            "posts":postserializer.data,
+            "reviews":reviewserializer.data
+        }
+        return Response(data, status=200)
 
 # 게시글 등록 (Create)
 class PostCreate(APIView):

@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from user.views import *
-from book.views import BookReviewAPI,AllBookReview,BookReviewUDAPI,BookReviewDeleteAPI,BookReviewDetailAPI,BookRecommendAPI
+from book.views import *
 from community.views import *
 
 
@@ -34,6 +34,7 @@ urlpatterns = [
     path('bookreview/delete/<int:pk>/',BookReviewDeleteAPI.as_view(),name='review_delete_api'),
     path('bookreview/create/',BookReviewAPI.as_view(),name='review_create_api'),
     path('bookrecommend/',BookRecommendAPI.as_view(),name='book_recommend_api'),
+    path('bookrecommend/search',BookSearchAPI.as_view(),name='book_search_api'),
     
     path('posts/', AllPostAPI.as_view(), name='post_api'),
     path('posts/create/', PostCreate.as_view(), name='post_create_api'),

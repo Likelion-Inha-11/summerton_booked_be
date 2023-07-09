@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from .models import *
-from .serializers import BookReviewSerializer,BookRecommendationSerializer
+from .serializers import BookReviewSerializer,BookRecommendationSerializer,BookSerializer
+from django.db.models import Q
+
 
 class BookReviewAPI(APIView):
 
@@ -159,6 +161,16 @@ class BookRecommendAPI(APIView):
         serializer.is_valid(raise_exception=True)
         recommendations = serializer.to_representation(serializer.validated_data)
         return Response(recommendations, status=200)
+    
+
+class BookSearchAPI(APIView):
+    def post(self,request):
+        search=request.data.get('search')
+        #title__icontains는 Django의 쿼리셋 API에서 사용되는 필터 표현식
+        #icontains: 필드에 대해 대서문자를 구분하지 않고 해당 문자열 포함된 경우 검색
+        books=Book.objects.filter(title__icontains=search)
+        serializer=BookSerializer(books,many=True)
+        return Response(serializer.data,status=200)        
     
         
         
