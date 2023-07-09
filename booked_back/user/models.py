@@ -24,7 +24,6 @@ class Profile(AbstractBaseUser):
 
 
     # 필요한 추가 필드를 여기에 추가할 수 있습니다.
-
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

@@ -1,9 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect
 from .serializers import ProfileSerializer
 from django.contrib.auth.hashers import make_password
+
 
 class SignupAPIView(APIView):
     def post(self, request):
@@ -27,3 +29,9 @@ class LoginAPIView(APIView):
             serializer = ProfileSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+class LogoutAPIView(APIView):
+    def get(self,request):
+        logout(request)
+        return Response({'message': 'LogoutSucess'}, status=200)
+    
