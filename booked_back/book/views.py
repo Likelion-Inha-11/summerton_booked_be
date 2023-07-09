@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from .models import *
-from .serializers import BookReviewSerializer
+from .serializers import BookReviewSerializer,BookRecommendationSerializer
 
 class BookReviewAPI(APIView):
 
@@ -19,6 +19,8 @@ class BookReviewAPI(APIView):
         fts = data.get('ft')
         jps = data.get('jp')
         contents = data.get('content')
+        pickpages=data.get('pickpage')
+        pickwritings=data.get('pickwriting')
 
         if not all([review_title, book_title, genres, feelings, eis, nss, fts, jps, contents]):
             return Response({'error': 'Missing required fields'}, status=400)
@@ -40,7 +42,9 @@ class BookReviewAPI(APIView):
             ns=ns,
             ft=ft,
             jp=jp,
-            content=contents
+            content=contents,
+            pickpage=pickpages,
+            pickwriting=pickwritings
         )
 
         return Response({'message': 'Book review created successfully'}, status=201)
@@ -138,16 +142,6 @@ class BookReviewDeleteAPI(APIView):
         book_review.delete()
 
         return Response({'message': 'Book review deleted successfully'}, status=200)
-
-    
-
-    
-     
-    #def get(self,request,pk):
-        #bookreview=get_object_or_404(BookReview,pk=pk)
-        #bookreviewserializer=BookReviewSerializer(bookreview)
-        #return Response(bookreviewserializer.data,status=200)
-                
         
 class AllBookReview(APIView):    
     def get(self,request):
@@ -155,6 +149,18 @@ class AllBookReview(APIView):
         
         bookreviewserializer=BookReviewSerializer(bookreview,many=True)
         return Response(bookreviewserializer.data,status=200)
+    
+    
+class BookRecommendAPI(APIView):
+    def post(self, request):
+        category = request.data.get('category')
+        field = request.data.get('field')
+        serializer = BookRecommendationSerializer(data={'category': category, 'field': field})
+        serializer.is_valid(raise_exception=True)
+        recommendations = serializer.to_representation(serializer.validated_data)
+        return Response(recommendations, status=200)
+    
+        
         
     
 

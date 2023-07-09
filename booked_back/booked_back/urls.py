@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from user.views import SignupAPIView, LoginAPIView
 from community.views import PostAPI
-from book.views import BookReviewAPI,AllBookReview,BookReviewUDAPI,BookReviewDeleteAPI,BookReviewDetailAPI
+from book.views import BookReviewAPI,AllBookReview,BookReviewUDAPI,BookReviewDeleteAPI,BookReviewDetailAPI,BookRecommendAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +30,7 @@ urlpatterns = [
     path('bookreview/modify/<int:pk>/',BookReviewUDAPI.as_view(),name='review_modify_api'),
     path('bookreview/delete/<int:pk>/',BookReviewDeleteAPI.as_view(),name='review_delete_api'),
     path('bookreview/create/',BookReviewAPI.as_view(),name='review_create_api'),
+    path('bookrecommend/',BookRecommendAPI.as_view(),name='book_recommend_api'),
     path('posts/', PostAPI.as_view(), name='post_api'),
     path('posts/create/', PostAPI.as_view(), name='post_create_api'),
     path('posts/<int:pk>/', PostAPI.as_view(), name='post_detail_api'),
