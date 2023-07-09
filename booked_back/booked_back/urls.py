@@ -17,8 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from user.views import SignupAPIView, LoginAPIView
-from community.views import PostAPI
 from book.views import BookReviewAPI,AllBookReview,BookReviewUDAPI,BookReviewDeleteAPI,BookReviewDetailAPI,BookRecommendAPI
+from community.views import *
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,10 +32,13 @@ urlpatterns = [
     path('bookreview/delete/<int:pk>/',BookReviewDeleteAPI.as_view(),name='review_delete_api'),
     path('bookreview/create/',BookReviewAPI.as_view(),name='review_create_api'),
     path('bookrecommend/',BookRecommendAPI.as_view(),name='book_recommend_api'),
-    path('posts/', PostAPI.as_view(), name='post_api'),
-    path('posts/create/', PostAPI.as_view(), name='post_create_api'),
-    path('posts/<int:pk>/', PostAPI.as_view(), name='post_detail_api'),
-    path('posts/<int:pk>/update/', PostAPI.as_view(), name='post_update_api'),
-    path('posts/<int:pk>/delete/', PostAPI.as_view(), name='post_delete_api'),
+    
+    path('posts/', AllPostAPI.as_view(), name='post_api'),
+    path('posts/create/', PostCreate.as_view(), name='post_create_api'),
+    path('posts/<int:pk>/', PostRead.as_view(), name='post_detail_api'),
+    path('posts/<int:pk>/update/', PostUpdate.as_view(), name='post_update_api'),
+    path('posts/<int:pk>/delete/', PostDelete.as_view(), name='post_delete_api'),
+    #path('login/', Login.as_view()),
+
     #path('login/', Login.as_view()),
 ]

@@ -19,7 +19,7 @@ class Profile(AbstractBaseUser):
     userID = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=20)
     nickname = models.CharField(max_length=15)
-    user_mbti = models.CharField(max_length=4)
+    user_mbti = models.CharField(max_length=100)
     #user = models.OneToOneField(User, on_delete=models.CASCADE)  # 새로 추가된 user 필드
 
 
