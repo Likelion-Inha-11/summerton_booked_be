@@ -7,6 +7,7 @@ from .serializers import BookReviewSerializer,BookRecommendationSerializer,BookS
 from django.db.models import Q
 
 
+
 class BookReviewAPI(APIView):
 
     def post(self, request, format=None):
@@ -168,9 +169,14 @@ class BookSearchAPI(APIView):
         search=request.data.get('search')
         #title__icontains는 Django의 쿼리셋 API에서 사용되는 필터 표현식
         #icontains: 필드에 대해 대서문자를 구분하지 않고 해당 문자열 포함된 경우 검색
-        books=Book.objects.filter(title__icontains=search)
-        serializer=BookSerializer(books,many=True)
-        return Response(serializer.data,status=200)        
+        books=BookReview.objects.filter(book_title__icontains=search)
+        serializer=BookReviewSerializer(books,many=True)
+        total=books.count()
+        data={
+            "searchresult":serializer.data,
+            "totalcount":total
+        }
+        return Response(data,status=200)        
     
         
         

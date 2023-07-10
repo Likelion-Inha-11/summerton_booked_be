@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from .serializers import ProfileSerializer
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import login_required
 
 
 class SignupAPIView(APIView):
@@ -34,4 +35,22 @@ class LogoutAPIView(APIView):
     def get(self,request):
         logout(request)
         return Response({'message': 'LogoutSucess'}, status=200)
+    
+
+
+class MypageAPIView(APIView):
+    def get(self,request):
+        user = request.user
+        profile = user
+
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=200)
+        
+        
+        
+        '''user=authenticate(request)
+        if user:
+            serializer=ProfileSerializer(data=request.data)
+            return Response(serializer.data,status=200)
+        return Response({'detail': 'Invalid credentials'},status=401)'''
     
