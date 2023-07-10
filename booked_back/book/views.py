@@ -284,11 +284,7 @@ class BookSearchAPI(APIView):
             }
         ),
         responses = {
-<<<<<<< HEAD
-            200: openapi.Response('검색어가 포함된 제목을 가진 독후감 정보 + 개수', BookReviewSerializer)
-=======
-            200: openapi.Response('검색어가 포함된 제목을 가진 Book 정보 + 개수', BookSerializer)
->>>>>>> acf0196e8c764c7a5f0818de002c9d2428251b0c
+            200: openapi.Response('검색어가 포함된 제목을 가진 독후감 정보 + 개수', BookReviewSerializer),
         }
     )
 
