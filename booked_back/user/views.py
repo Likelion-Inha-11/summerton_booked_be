@@ -5,10 +5,28 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from .serializers import ProfileSerializer
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required
+
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 class SignupAPIView(APIView):
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT, 
+            properties={
+                'userID': openapi.Schema(type=openapi.TYPE_STRING, description="아이디"),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description="비밀번호"),
+                'nickname': openapi.Schema(type=openapi.TYPE_STRING, description="닉네임"),
+                'user_mbti': openapi.Schema(type=openapi.TYPE_STRING, description="한 줄 소개"),
+            }
+        ),
+        responses = {
+            201: openapi.Response('회원가입 성공', ProfileSerializer),
+            400: openapi.Response('회원가입 실패')
+        }
+    )
+
     def post(self, request):
         serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
@@ -21,6 +39,20 @@ class SignupAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginAPIView(APIView):
+    @swagger_auto_schema(
+            request_body=openapi.Schema(
+                type=openapi.TYPE_OBJECT, 
+                properties={
+                    'userID': openapi.Schema(type=openapi.TYPE_STRING, description="아이디"),
+                    'password': openapi.Schema(type=openapi.TYPE_STRING, description="비밀번호")
+                }
+            ),
+            responses = {
+                200: openapi.Response('로그인 성공', ProfileSerializer),
+                401: openapi.Response('로그인 실패')
+            }
+        )
+    
     def post(self, request):
         userID = request.data.get('userID')
         password = request.data.get('password')
@@ -32,25 +64,26 @@ class LoginAPIView(APIView):
         return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
 class LogoutAPIView(APIView):
+    @swagger_auto_schema(
+            responses = {
+                200: openapi.Response('로그아웃 성공')
+            }
+        )
+    
     def get(self,request):
         logout(request)
-        return Response({'message': 'LogoutSucess'}, status=200)
-    
-
+        return Response({'message': 'LogoutSuccess'}, status=200)
 
 class MypageAPIView(APIView):
+    @swagger_auto_schema(
+        responses = {
+            200: openapi.Response('마이페이지 접속 성공', ProfileSerializer)
+        }
+    )
+
     def get(self,request):
         user = request.user
         profile = user
 
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=200)
-        
-        
-        
-        '''user=authenticate(request)
-        if user:
-            serializer=ProfileSerializer(data=request.data)
-            return Response(serializer.data,status=200)
-        return Response({'detail': 'Invalid credentials'},status=401)'''
-    

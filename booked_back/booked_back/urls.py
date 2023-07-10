@@ -15,27 +15,41 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from user.views import *
 from book.views import *
 from community.views import *
 
+from rest_framework.permissions import AllowAny
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title = "Booked Swagger",
+        default_version = "v1",
+        description = "Swagger를 사용한 'Booked' API 문서입니다",
+    ),
+    public=True,
+    permission_classes=(AllowAny,),
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('mypage/', MypageAPIView.as_view(), name='mypage'),
     path('signup/', SignupAPIView.as_view(), name='signup'),
     path('login/', LoginAPIView.as_view(), name='login'),
     path('logout/', LogoutAPIView.as_view(), name='logout'),
-    path('mypage/', MypageAPIView.as_view(), name='mypage'),
 
     path('bookreviewall/',AllBookReview.as_view(),name='all_book_review'),
     path('bookreview/',BookReviewAPI.as_view(),name='review_my_api'),
     path('bookreview/<int:pk>/',BookReviewDetailAPI.as_view(),name='review_detail_api'),
-    path('bookreview/modify/<int:pk>/',BookReviewUDAPI.as_view(),name='review_modify_api'),
+    path('bookreview/modify/<int:pk>/',BookReviewUpdateAPI.as_view(),name='review_modify_api'),
     path('bookreview/delete/<int:pk>/',BookReviewDeleteAPI.as_view(),name='review_delete_api'),
-    path('bookreview/create/',BookReviewAPI.as_view(),name='review_create_api'),
+    path('bookreview/create/',BookReviewCreateAPI.as_view(),name='review_create_api'),
     path('bookrecommend/',BookRecommendAPI.as_view(),name='book_recommend_api'),
-    path('bookrecommend/search',BookSearchAPI.as_view(),name='book_search_api'),
+    path('bookrecommend/search/',BookSearchAPI.as_view(),name='book_search_api'),
     
     path('posts/', AllPostAPI.as_view(), name='post_api'),
     path('posts/create/', PostCreate.as_view(), name='post_create_api'),
@@ -45,4 +59,8 @@ urlpatterns = [
     #path('login/', Login.as_view()),
 
     #path('login/', Login.as_view()),
+
+    # Swagger url
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

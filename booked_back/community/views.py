@@ -4,16 +4,26 @@ from rest_framework.response import Response
 from .models import Post,Comment
 from .serializers import PostSerializer, CommentSerializer
 from book.models import BookReview
+from user.models import Profile
 from book.serializers import BookReviewSerializer
-# Create your views here.
+
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 # 게시글 전체 조회
 class AllPostAPI(APIView):
+    @swagger_auto_schema(
+            responses = {
+                200: openapi.Response('게시글, 독후감 조회 성공', PostSerializer),
+                201: openapi.Response('게시글, 독후감 조회 성공', BookReviewSerializer)
+            }
+        )
+    
     def get(self, request):
         post = Post.objects.all()
         
-        #독후감 랜덤으로 5개 가져오기
+        #독후감 랜덤으로 4개 가져오기
         reviews=BookReview.objects.order_by('?')[:4]
         postserializer = PostSerializer(post, many=True)
         reviewserializer=BookReviewSerializer(reviews,many=True)
@@ -25,6 +35,19 @@ class AllPostAPI(APIView):
 
 # 게시글 등록 (Create)
 class PostCreate(APIView):
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT, 
+            properties={
+                'title': openapi.Schema(type=openapi.TYPE_STRING, description="게시글 제목"),
+                'content': openapi.Schema(type=openapi.TYPE_STRING, description="게시글 내용")
+            }
+        ),
+        responses = {
+            200: openapi.Response('게시글 작성 성공', PostSerializer)
+        }
+    )
+
     def post(self,request):
         post=Post()
         
@@ -39,6 +62,12 @@ class PostCreate(APIView):
     
 # 게시글 조회 (Read)
 class PostRead(APIView):
+    @swagger_auto_schema(
+        responses = {
+            200: openapi.Response('게시글 조회 성공', PostSerializer)
+        }
+    )
+
     def get(self, request, pk):
         post = get_object_or_404(Post, pk = pk)
         
@@ -47,6 +76,19 @@ class PostRead(APIView):
 
 # 게시글 수정 (Update)
 class PostUpdate(APIView):
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT, 
+            properties={
+                'title': openapi.Schema(type=openapi.TYPE_STRING, description="게시글 제목"),
+                'content': openapi.Schema(type=openapi.TYPE_STRING, description="게시글 내용")
+            }
+        ),
+        responses = {
+            200: openapi.Response('게시글 수정 성공', PostSerializer)
+        }
+    )
+
     def put(self, request, pk):
         post = get_object_or_404(Post, pk = pk)
     
@@ -60,12 +102,18 @@ class PostUpdate(APIView):
 
 # 게시글 삭제 (Delete)    
 class PostDelete(APIView):
+    @swagger_auto_schema(
+        responses = {
+            200: openapi.Response('게시글 삭제 성공')
+        }
+    )
+
     def delete(self,request, pk):
         post = get_object_or_404(Post, pk = pk)
 
         post.delete()
         
-        return Response(status=200)
+        return Response({'message': 'Post deleted successfully'}, status=200)
 
 
 # 답글 등록 (Create)
