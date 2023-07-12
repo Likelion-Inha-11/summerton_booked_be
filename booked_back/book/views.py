@@ -42,7 +42,7 @@ class BookReviewCreateAPI(APIView):
                     'ft': openapi.Schema(type=openapi.TYPE_STRING, description="F/T"),
                     'jp': openapi.Schema(type=openapi.TYPE_STRING, description="J/P"),
                     'content': openapi.Schema(type=openapi.TYPE_STRING, description="독후감 내용"),
-                    'created_at': openapi.Schema(type=openapi.TYPE_STRING, description="읽은 날짜"),
+                    #'created_at': openapi.Schema(type=openapi.TYPE_STRING, description="읽은 날짜"),
                     'pickpage': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 페이지"),
                     'pickwriting': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 글귀"),
                 }
@@ -66,7 +66,7 @@ class BookReviewCreateAPI(APIView):
         fts = data.get('ft')
         jps = data.get('jp')
         contents = data.get('content')
-        created_ats=data.get('created_at')
+       # created_ats=data.get('created_at')
         pickpages=data.get('pickpage')
         pickwritings=data.get('pickwriting')
 
@@ -92,7 +92,7 @@ class BookReviewCreateAPI(APIView):
             ft=ft,
             jp=jp,
             content=contents,
-            created_at=created_ats,
+            #created_at=created_ats,
             pickpage=pickpages,
             pickwriting=pickwritings
         )
@@ -168,7 +168,7 @@ class BookReviewUpdateAPI(APIView):
                     'ft': openapi.Schema(type=openapi.TYPE_STRING, description="F/T"),
                     'jp': openapi.Schema(type=openapi.TYPE_STRING, description="J/P"),
                     'content': openapi.Schema(type=openapi.TYPE_STRING, description="독후감 내용"),
-                    'created_at': openapi.Schema(type=openapi.TYPE_STRING, description="읽은 날짜"),
+                    #'created_at': openapi.Schema(type=openapi.TYPE_STRING, description="읽은 날짜"),
                     'pickpage': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 페이지"),
                     'pickwriting': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 글귀"),
                 }
@@ -198,7 +198,7 @@ class BookReviewUpdateAPI(APIView):
         fts = data.get('ft')
         jps = data.get('jp')
         contents = data.get('content')
-        created_ats=data.get('created_ats')
+       # created_ats=data.get('created_ats')
         pickpages=data.get('pickpage')
         pickwritings=data.get('pickwriting')
 
@@ -223,7 +223,7 @@ class BookReviewUpdateAPI(APIView):
         book_review.ft = ft
         book_review.jp = jp
         book_review.content = contents
-        book_review.created_at=created_ats
+      #  book_review.created_at=created_ats
         book_review.pickpage=pickpages,
         book_review.pickwriting=pickwritings
         book_review.save()
