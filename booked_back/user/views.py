@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from .serializers import ProfileSerializer
 from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import IsAuthenticated
 
 from community.models import *
 from community.serializers import *
@@ -79,6 +80,7 @@ class LogoutAPIView(APIView):
         return Response({'message': 'LogoutSuccess'}, status=200)
 
 class MypageAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         responses = {
             200: openapi.Response('마이페이지 접속 성공', ProfileSerializer)
@@ -94,6 +96,7 @@ class MypageAPIView(APIView):
     
 # 내 게시글 조회
 class MyPostsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('내 게시글 조회 성공', PostSerializer),
@@ -112,6 +115,7 @@ class MyPostsAPIView(APIView):
 
 # 내 댓글 조회
 class MyCommentsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('내 댓글 조회 성공', CommentSerializer),

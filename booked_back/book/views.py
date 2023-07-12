@@ -5,12 +5,14 @@ from rest_framework.authentication import TokenAuthentication
 from .models import *
 from .serializers import BookReviewSerializer,BookRecommendationSerializer,BookSerializer
 from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
 class BookReviewAPI(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('독후감 조회 성공'),
@@ -28,6 +30,7 @@ class BookReviewAPI(APIView):
         return Response(serializer.data, status=200)
 
 class BookReviewCreateAPI(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             request_body=openapi.Schema(
                 type=openapi.TYPE_OBJECT, 
@@ -137,6 +140,7 @@ class BookReviewDetailAPI(APIView):
         return Response({'message': 'Current Like: '+str(book_review.like.count())}, status=200)
         
 class BookReviewUpdateAPI(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('독후감 조회 성공'),
@@ -232,6 +236,7 @@ class BookReviewUpdateAPI(APIView):
     
 
 class BookReviewDeleteAPI(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('독후감 삭제 성공'),

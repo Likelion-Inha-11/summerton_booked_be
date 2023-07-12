@@ -6,6 +6,7 @@ from .serializers import PostSerializer, CommentSerializer
 from book.models import BookReview
 from user.models import Profile
 from book.serializers import BookReviewSerializer
+from rest_framework.permissions import IsAuthenticated
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -35,6 +36,7 @@ class AllPostAPI(APIView):
 
 # 게시글 등록 (Create)
 class PostCreate(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT, 
@@ -76,6 +78,7 @@ class PostRead(APIView):
 
 # 게시글 수정 (Update)
 class PostUpdate(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT, 
@@ -102,6 +105,7 @@ class PostUpdate(APIView):
 
 # 게시글 삭제 (Delete)    
 class PostDelete(APIView):
+    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         responses = {
             200: openapi.Response('게시글 삭제 성공')
@@ -118,6 +122,7 @@ class PostDelete(APIView):
 
 # 답글 등록 (Create)
 class CommentCreate(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self,request):
         comment=Comment()
 
@@ -139,6 +144,7 @@ class CommentRead(APIView):
 
 # 답글 수정 (Update)
 class CommentUpdate(APIView):
+    permission_classes = [IsAuthenticated]
     def put(self, request, pk):
         comment=Comment.objects.filter(pk=pk)
     
@@ -151,6 +157,7 @@ class CommentUpdate(APIView):
     
 # 답글 삭제 (Delete)
 class CommentDelete(APIView):
+    permission_classes = [IsAuthenticated]
     def delete(self,request, pk):
         comment = Comment.objects.filter(pk=pk)
 
