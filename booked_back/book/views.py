@@ -70,7 +70,7 @@ class BookReviewCreateAPI(APIView):
         pickpages=data.get('pickpage')
         pickwritings=data.get('pickwriting')
 
-        if not all([review_title, book_title, genres,authors, feelings, eis, nss, fts, jps, contents,created_ats]):
+        if not all([review_title, book_title, genres,authors, feelings, eis, nss, fts, jps, contents]):
             return Response({'error': 'Missing required fields'}, status=400)
         
         genre = Genre.objects.get(name=genres)
@@ -203,7 +203,7 @@ class BookReviewUpdateAPI(APIView):
         pickwritings=data.get('pickwriting')
 
 
-        if not all([review_title, book_title, genres, feelings, eis, nss, fts, jps, contents,created_ats]):
+        if not all([review_title, book_title, genres, feelings, eis, nss, fts, jps, contents]):
             return Response({'error': 'Missing required fields'}, status=400)
 
         genre = Genre.objects.get(name=genres)
