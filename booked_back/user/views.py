@@ -19,6 +19,7 @@ class SignupAPIView(APIView):
                 'password': openapi.Schema(type=openapi.TYPE_STRING, description="비밀번호"),
                 'nickname': openapi.Schema(type=openapi.TYPE_STRING, description="닉네임"),
                 'user_mbti': openapi.Schema(type=openapi.TYPE_STRING, description="한 줄 소개"),
+                'image': openapi.Schema(type=openapi.TYPE_STRING, description="프로필 사진"),
             }
         ),
         responses = {

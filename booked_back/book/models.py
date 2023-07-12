@@ -61,8 +61,8 @@ class BookReview(models.Model):
     ft = models.ForeignKey(FT, on_delete=models.CASCADE, related_name='reviews')
     jp = models.ForeignKey(JP, on_delete=models.CASCADE, related_name='reviews')
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=False) #읽은 날짜 자동설정 말고 입력할 수 있게
+    updated_at = models.DateTimeField(auto_now=True)  # 필요없
     like=models.ManyToManyField(Profile,related_name='likes',blank=True)
     pickpage=models.CharField(max_length=255,null=True,blank=True)
     pickwriting=models.CharField(max_length=255,null=True,blank=True)

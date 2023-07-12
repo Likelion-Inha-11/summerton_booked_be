@@ -161,6 +161,7 @@ class BookReviewUpdateAPI(APIView):
                     'ft': openapi.Schema(type=openapi.TYPE_STRING, description="F/T"),
                     'jp': openapi.Schema(type=openapi.TYPE_STRING, description="J/P"),
                     'content': openapi.Schema(type=openapi.TYPE_STRING, description="독후감 내용"),
+                    'created_at': openapi.Schema(type=openapi.TYPE_STRING, description="읽은 날짜"),
                     'pickpage': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 페이지"),
                     'pickwriting': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 글귀"),
                 }
@@ -189,11 +190,12 @@ class BookReviewUpdateAPI(APIView):
         fts = data.get('ft')
         jps = data.get('jp')
         contents = data.get('content')
+        created_ats=data.get('created_ats')
         pickpages=data.get('pickpage')
         pickwritings=data.get('pickwriting')
 
 
-        if not all([review_title, book_title, genres, feelings, eis, nss, fts, jps, contents]):
+        if not all([review_title, book_title, genres, feelings, eis, nss, fts, jps, contents,created_ats]):
             return Response({'error': 'Missing required fields'}, status=400)
 
         genre = Genre.objects.get(name=genres)
@@ -212,6 +214,7 @@ class BookReviewUpdateAPI(APIView):
         book_review.ft = ft
         book_review.jp = jp
         book_review.content = contents
+        book_review.created_at=created_ats
         book_review.pickpage=pickpages,
         book_review.pickwriting=pickwritings
         book_review.save()
