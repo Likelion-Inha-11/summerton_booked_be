@@ -35,12 +35,14 @@ class BookReviewCreateAPI(APIView):
                     'review_title': openapi.Schema(type=openapi.TYPE_STRING, description="독후감 제목"),
                     'book_title': openapi.Schema(type=openapi.TYPE_STRING, description="책 제목"),
                     'genre': openapi.Schema(type=openapi.TYPE_STRING, description="장르"),
+                    'author': openapi.Schema(type=openapi.TYPE_STRING, description="저자"),
                     'feeling': openapi.Schema(type=openapi.TYPE_STRING, description="기분"),
                     'ei': openapi.Schema(type=openapi.TYPE_STRING, description="E/I"),
                     'ns': openapi.Schema(type=openapi.TYPE_STRING, description="N/S"),
                     'ft': openapi.Schema(type=openapi.TYPE_STRING, description="F/T"),
                     'jp': openapi.Schema(type=openapi.TYPE_STRING, description="J/P"),
                     'content': openapi.Schema(type=openapi.TYPE_STRING, description="독후감 내용"),
+                    'created_at': openapi.Schema(type=openapi.TYPE_STRING, description="읽은 날짜"),
                     'pickpage': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 페이지"),
                     'pickwriting': openapi.Schema(type=openapi.TYPE_STRING, description="기억에 남는 글귀"),
                 }
@@ -57,16 +59,18 @@ class BookReviewCreateAPI(APIView):
         review_title = data.get('review_title')
         book_title = data.get('book_title')
         genres = data.get('genre')
+        authors = data.get('author')
         feelings = data.get('feeling')
         eis = data.get('ei')
         nss = data.get('ns')
         fts = data.get('ft')
         jps = data.get('jp')
         contents = data.get('content')
+        created_ats=data.get('created_at')
         pickpages=data.get('pickpage')
         pickwritings=data.get('pickwriting')
 
-        if not all([review_title, book_title, genres, feelings, eis, nss, fts, jps, contents]):
+        if not all([review_title, book_title, genres,authors, feelings, eis, nss, fts, jps, contents,created_ats]):
             return Response({'error': 'Missing required fields'}, status=400)
         
         genre = Genre.objects.get(name=genres)
@@ -80,13 +84,15 @@ class BookReviewCreateAPI(APIView):
             user=profile,
             review_title=review_title,
             book_title=book_title,
-            genre=genre,
-            feeling=feeling,
+            genre=genres,
+            author=authors,
+            feeling=feelings,
             ei=ei,
             ns=ns,
             ft=ft,
             jp=jp,
             content=contents,
+            created_at=created_ats,
             pickpage=pickpages,
             pickwriting=pickwritings
         )
@@ -154,6 +160,7 @@ class BookReviewUpdateAPI(APIView):
                 properties={
                     'review_title': openapi.Schema(type=openapi.TYPE_STRING, description="독후감 제목"),
                     'book_title': openapi.Schema(type=openapi.TYPE_STRING, description="책 제목"),
+                    'author': openapi.Schema(type=openapi.TYPE_STRING, description="저자"),
                     'genre': openapi.Schema(type=openapi.TYPE_STRING, description="장르"),
                     'feeling': openapi.Schema(type=openapi.TYPE_STRING, description="기분"),
                     'ei': openapi.Schema(type=openapi.TYPE_STRING, description="E/I"),
@@ -184,6 +191,7 @@ class BookReviewUpdateAPI(APIView):
         review_title = data.get('review_title')
         book_title = data.get('book_title')
         genres = data.get('genre')
+        authors = data.get('author')
         feelings = data.get('feeling')
         eis = data.get('ei')
         nss = data.get('ns')
@@ -208,6 +216,7 @@ class BookReviewUpdateAPI(APIView):
         book_review.review_title = review_title
         book_review.book_title = book_title
         book_review.genre = genre
+        book_review.author=authors
         book_review.feeling = feeling
         book_review.ei = ei
         book_review.ns = ns

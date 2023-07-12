@@ -53,6 +53,7 @@ class BookReview(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='reviews')
     review_title=models.CharField(max_length=255)
     book_title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255,default="N")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='reviews')
     feeling = models.ForeignKey(Feeling, on_delete=models.CASCADE, related_name='reviews')
