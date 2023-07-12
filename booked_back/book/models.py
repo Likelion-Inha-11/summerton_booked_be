@@ -71,6 +71,7 @@ class BookReview(models.Model):
     def __str__(self):
         return self.review_title
     
+    
     def get_like_count(self):
         return self.like.count()
     

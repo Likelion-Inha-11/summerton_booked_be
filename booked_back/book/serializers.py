@@ -27,7 +27,8 @@ from rest_framework import serializers
 from .models import BookReview,Book,GenreCount,FillingCount,EICount,NSCount,FTCount,JPCount
 
 class BookReviewSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+    user = serializers.SerializerMethodField()
+    #user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
 
     class Meta:
         model = BookReview
@@ -40,7 +41,12 @@ class BookReviewSerializer(serializers.ModelSerializer):
             user = request.user.profile
         validated_data['user'] = user
         instance = self.Meta.model.objects.create(**validated_data)
-        return instance            
+        return instance
+    
+    def get_user(self, obj):
+        return obj.user.nickname
+    
+           
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -108,4 +114,6 @@ class BookRecommendationSerializer(serializers.Serializer):
 
         book_serializer = BookSerializer(filtered_books, many=True)
         return book_serializer.data
+    
+    
     

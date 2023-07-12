@@ -13,6 +13,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     comment_set = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     comment_count = serializers.IntegerField(source='comment_set.count', read_only=True)
+    poster = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -20,3 +21,6 @@ class PostSerializer(serializers.ModelSerializer):
         # Post 안의 모든 정보를 json으로 변환
         fields = '__all__'
         read_only_fields = ('comment_set', 'comment_count')
+        
+    def get_poster(self, obj):
+        return obj.poster.nickname    
