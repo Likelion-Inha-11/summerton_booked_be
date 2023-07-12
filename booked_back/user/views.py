@@ -6,6 +6,9 @@ from django.shortcuts import redirect
 from .serializers import ProfileSerializer
 from django.contrib.auth.hashers import make_password
 
+from community.models import *
+from community.serializers import *
+
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -87,4 +90,40 @@ class MypageAPIView(APIView):
         profile = user
 
         serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=200)
+    
+# 내 게시글 조회
+class MyPostsAPIView(APIView):
+    @swagger_auto_schema(
+            responses = {
+                200: openapi.Response('내 게시글 조회 성공', PostSerializer),
+                400: openapi.Response('등록된 유저가 아니므로 내 게시글 조회 실패')
+            }
+        )
+    
+    def get(self, request,format=None):
+        profile = request.user
+        if not profile:
+            return Response({'error': 'User profile not found'}, status=400)
+
+        my_posts = Post.objects.filter(poster=request.user)
+        serializer = PostSerializer(my_posts, many=True)
+        return Response(serializer.data, status=200)
+
+# 내 댓글 조회
+class MyCommentsAPIView(APIView):
+    @swagger_auto_schema(
+            responses = {
+                200: openapi.Response('내 댓글 조회 성공', CommentSerializer),
+                400: openapi.Response('등록된 유저가 아니므로 내 댓글 조회 실패')
+            }
+        )
+    
+    def get(self, request,format=None):
+        profile = request.user
+        if not profile:
+            return Response({'error': 'User profile not found'}, status=400)
+
+        my_comments = Comment.objects.filter(commenter=request.user)
+        serializer = CommentSerializer(my_comments, many=True)
         return Response(serializer.data, status=200)

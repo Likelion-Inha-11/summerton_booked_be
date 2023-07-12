@@ -45,6 +45,9 @@ urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='login'),
     path('logout/', LogoutAPIView.as_view(), name='logout'),
 
+    path('mypage/posts/', MyPostsAPIView.as_view(), name='myposts'),
+    path('mypage/comments/', MyCommentsAPIView.as_view(), name='mycomments'),
+
     path('bookreviewall/',AllBookReview.as_view(),name='all_book_review'),
     path('bookreview/',BookReviewAPI.as_view(),name='review_my_api'),
     path('bookreview/<int:pk>/',BookReviewDetailAPI.as_view(),name='review_detail_api'),
