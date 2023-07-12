@@ -28,6 +28,8 @@ from .models import BookReview,Book,GenreCount,FillingCount,EICount,NSCount,FTCo
 
 class BookReviewSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    like_count = serializers.IntegerField(source='like.count', read_only=True)
+    #like_count=serializers.IntegerField(source='get_like.count', read_only=True)
     #user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
 
     class Meta:
