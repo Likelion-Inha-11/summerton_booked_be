@@ -19,6 +19,8 @@ from django.urls import path, re_path
 from user.views import *
 from book.views import *
 from community.views import *
+from django.views.static import serve
+from django.conf import settings
 
 from rest_framework.permissions import AllowAny
 from drf_yasg.views import get_schema_view
@@ -61,6 +63,8 @@ urlpatterns = [
     #path('login/', Login.as_view()),
 
     # Swagger url
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
