@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from community.models import *
 from community.serializers import *
@@ -71,6 +72,8 @@ class LoginAPIView(APIView):
             login(request, user)
             serializer = ProfileSerializer(user)
             #return Response(serializer.data, status=status.HTTP_200_OK)
+            refresh = str(RefreshToken.for_user(user))
+            refreshtoken=str(refresh.access_token)
             session=request.session.session_key
             csrf=get_token(request)
         
@@ -79,7 +82,9 @@ class LoginAPIView(APIView):
                 
                 "userinfo":serializer.data,
                 "sessionid":session,
-                "csrftoken":csrf
+                "csrftoken":csrf,
+                "refresh":refresh,
+                "refreshtoken":refreshtoken
             }
         
             response = Response(data, status=status.HTTP_200_OK)

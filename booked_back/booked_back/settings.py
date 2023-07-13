@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'sslserver',
     'corsheaders',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -148,6 +151,10 @@ CORS_ALLOW_CREDENTIALS = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# 세션 엔진 설정
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'  # 또는 다른 세션 백엔드 사용
+SESSION_COOKIE_HTTPONLY = True  # 쿠키에 HTTPOnly 플래그 사용 권장
+
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
@@ -173,3 +180,9 @@ CORS_ALLOW_HEADERS = (
     'csrftoken',
     'x-requested-with',
 )
+
+# 토큰 유효 기간 설정 (선택적)
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
