@@ -7,6 +7,8 @@ from book.models import BookReview
 from user.models import Profile
 from book.serializers import BookReviewSerializer
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -20,6 +22,7 @@ class AllPostAPI(APIView):
                 201: openapi.Response('게시글, 독후감 조회 성공', BookReviewSerializer)
             }
         )
+    
     
     def get(self, request):
         post = Post.objects.all().order_by('?')
@@ -36,7 +39,6 @@ class AllPostAPI(APIView):
 
 # 게시글 등록 (Create)
 class PostCreate(APIView):
-    permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT, 
@@ -49,7 +51,8 @@ class PostCreate(APIView):
             200: openapi.Response('게시글 작성 성공', PostSerializer)
         }
     )
-
+    #permission_classes = [IsAuthenticated]
+    @method_decorator(csrf_exempt)
     def post(self,request):
         post=Post()
         
@@ -78,7 +81,7 @@ class PostRead(APIView):
         return Response(postserializer.data, status=200)
     
     
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -92,7 +95,7 @@ class PostRead(APIView):
         }
     )
     
-    
+    @method_decorator(csrf_exempt)
     def post(self, request, pk):
         data = request.data
 
@@ -115,7 +118,7 @@ class PostRead(APIView):
 
 # 게시글 수정 (Update)
 class PostUpdate(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT, 
@@ -129,6 +132,7 @@ class PostUpdate(APIView):
         }
     )
 
+    @method_decorator(csrf_exempt)
     def put(self, request, pk):
         post = get_object_or_404(Post, pk = pk)
     
@@ -142,13 +146,14 @@ class PostUpdate(APIView):
 
 # 게시글 삭제 (Delete)    
 class PostDelete(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         responses = {
             200: openapi.Response('게시글 삭제 성공')
         }
     )
-
+    
+    @method_decorator(csrf_exempt)
     def delete(self,request, pk):
         post = get_object_or_404(Post, pk = pk)
 
@@ -159,7 +164,8 @@ class PostDelete(APIView):
 
 # 답글 등록 (Create)
 class CommentCreate(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
+    @method_decorator(csrf_exempt)
     def post(self,request):
         comment=Comment()
 
@@ -181,7 +187,8 @@ class CommentRead(APIView):
 
 # 답글 수정 (Update)
 class CommentUpdate(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
+    @method_decorator(csrf_exempt)
     def put(self, request, pk):
         comment=Comment.objects.filter(pk=pk)
     
@@ -194,7 +201,8 @@ class CommentUpdate(APIView):
     
 # 답글 삭제 (Delete)
 class CommentDelete(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
+    @method_decorator(csrf_exempt)
     def delete(self,request, pk):
         comment = Comment.objects.filter(pk=pk)
 

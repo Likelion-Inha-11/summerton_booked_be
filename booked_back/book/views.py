@@ -6,13 +6,15 @@ from .models import *
 from .serializers import BookReviewSerializer,BookRecommendationSerializer,BookSerializer
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
 class BookReviewAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('독후감 조회 성공'),
@@ -20,6 +22,7 @@ class BookReviewAPI(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     def get(self, request,format=None):
         profile = request.user
         if not profile:
@@ -30,7 +33,7 @@ class BookReviewAPI(APIView):
         return Response(serializer.data, status=200)
 
 class BookReviewCreateAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             request_body=openapi.Schema(
                 type=openapi.TYPE_OBJECT, 
@@ -56,6 +59,7 @@ class BookReviewCreateAPI(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     def post(self, request, format=None):
         profile = request.user
         data = request.data
@@ -128,6 +132,7 @@ class BookReviewDetailAPI(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     #좋아요
     def post(self, request, pk, format=None):
         profile = request.user
@@ -140,7 +145,7 @@ class BookReviewDetailAPI(APIView):
         return Response({'message': 'Current Like: '+str(book_review.like.count())}, status=200)
         
 class BookReviewUpdateAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('독후감 조회 성공'),
@@ -148,6 +153,7 @@ class BookReviewUpdateAPI(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     # 수정할 독후감 불러오기
     def get(self, request,pk,format=None):
         profile = request.user
@@ -183,6 +189,7 @@ class BookReviewUpdateAPI(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     # PUT 메서드 추가
     def put(self, request, pk, format=None):
         profile = request.user
@@ -236,7 +243,7 @@ class BookReviewUpdateAPI(APIView):
     
 
 class BookReviewDeleteAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('독후감 삭제 성공'),
@@ -244,6 +251,7 @@ class BookReviewDeleteAPI(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     # 독후감 삭제
     def delete(self, request, pk, format=None):
         profile = request.user

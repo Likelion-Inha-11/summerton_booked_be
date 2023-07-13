@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from community.models import *
 from community.serializers import *
@@ -99,13 +101,14 @@ class LogoutAPIView(APIView):
         return Response({'message': 'LogoutSuccess'}, status=200)
 
 class MypageAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         responses = {
             200: openapi.Response('마이페이지 접속 성공', ProfileSerializer)
         }
     )
-
+    
+    @method_decorator(csrf_exempt)
     def get(self,request):
         user = request.user
         profile = user
@@ -114,7 +117,7 @@ class MypageAPIView(APIView):
         return Response(serializer.data, status=200)
     
 class MypageModifyAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT, 
@@ -129,6 +132,7 @@ class MypageModifyAPIView(APIView):
         }
     )
 
+    @method_decorator(csrf_exempt)
     def put(self, request):
         user = request.user
         profile = user # assuming you have a related_name for the profile field
@@ -150,7 +154,7 @@ class MypageModifyAPIView(APIView):
     
 # 내 게시글 조회
 class MyPostsAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('내 게시글 조회 성공', PostSerializer),
@@ -158,6 +162,7 @@ class MyPostsAPIView(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     def get(self, request,format=None):
         profile = request.user
         if not profile:
@@ -169,7 +174,7 @@ class MyPostsAPIView(APIView):
 
 # 내 댓글 조회
 class MyCommentsAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     @swagger_auto_schema(
             responses = {
                 200: openapi.Response('내 댓글 조회 성공', CommentSerializer),
@@ -177,6 +182,7 @@ class MyCommentsAPIView(APIView):
             }
         )
     
+    @method_decorator(csrf_exempt)
     def get(self, request,format=None):
         profile = request.user
         if not profile:
