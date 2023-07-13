@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from .serializers import ProfileSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated
+from django.middleware.csrf import get_token
 
 from community.models import *
 from community.serializers import *
@@ -61,11 +62,18 @@ class LoginAPIView(APIView):
     def post(self, request):
         userID = request.data.get('userID')
         password = request.data.get('password')
-        user = authenticate(request, username=userID, password=password)
+        user = authenticate(request, username=userID, password=password) #권한인증
         if user:
             login(request, user)
             serializer = ProfileSerializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            #return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # 세션 ID와 CSRF 토큰을 응답에 포함시킴
+            response = Response(serializer.data, status=status.HTTP_200_OK)
+            response["X-CSRFToken"] = get_token(request)
+            response["Set-Cookie"] = f"sessionid={request.session.session_key}; Path=/; HttpOnly"
+
+            return response
         return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
 class LogoutAPIView(APIView):
