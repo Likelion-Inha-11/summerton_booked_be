@@ -72,8 +72,9 @@ class LoginAPIView(APIView):
             login(request, user)
             serializer = ProfileSerializer(user)
             #return Response(serializer.data, status=status.HTTP_200_OK)
-            refresh = str(RefreshToken.for_user(user))
-            refreshtoken=str(refresh.access_token)
+            refresh1 = RefreshToken.for_user(user)
+            refresh=str(refresh1)
+            refreshtoken=str(refresh1.access_token)
             session=request.session.session_key
             csrf=get_token(request)
         
