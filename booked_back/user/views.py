@@ -94,6 +94,41 @@ class MypageAPIView(APIView):
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=200)
     
+class MypageModifyAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT, 
+            properties={
+                'nickname': openapi.Schema(type=openapi.TYPE_STRING, description="닉네임"),
+                'user_mbti': openapi.Schema(type=openapi.TYPE_STRING, description="한 줄 소개"),
+            }
+        ),
+        responses = {
+            200: openapi.Response('마이페이지 수정 성공', ProfileSerializer),
+            400: openapi.Response('마이페이지 수정 실패')
+        }
+    )
+
+    def put(self, request):
+        user = request.user
+        profile = user # assuming you have a related_name for the profile field
+
+        data = request.data
+        nickname = data.get('nickname')
+        user_mbti = data.get('user_mbti')
+
+        if nickname:
+            profile.nickname = nickname
+        if user_mbti:
+            profile.user_mbti = user_mbti
+
+        profile.save()
+
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=200)
+
+    
 # 내 게시글 조회
 class MyPostsAPIView(APIView):
     permission_classes = [IsAuthenticated]

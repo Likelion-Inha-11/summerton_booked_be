@@ -44,9 +44,11 @@ urlpatterns = [
     path('signup/', SignupAPIView.as_view(), name='signup'),
     path('login/', LoginAPIView.as_view(), name='login'),
     path('logout/', LogoutAPIView.as_view(), name='logout'),
+    path('mypage/modify/', MypageModifyAPIView.as_view(), name='mypagemodify'),
 
     path('mypage/posts/', MyPostsAPIView.as_view(), name='myposts'),
     path('mypage/comments/', MyCommentsAPIView.as_view(), name='mycomments'),
+    
 
     path('bookreviewall/',AllBookReview.as_view(),name='all_book_review'),
     path('bookreview/',BookReviewAPI.as_view(),name='review_my_api'),
@@ -62,6 +64,7 @@ urlpatterns = [
     path('posts/<int:pk>/', PostRead.as_view(), name='post_detail_api'),
     path('posts/<int:pk>/update/', PostUpdate.as_view(), name='post_update_api'),
     path('posts/<int:pk>/delete/', PostDelete.as_view(), name='post_delete_api'),
+    path('posts/comments/<int:pk>/delete/', CommentDelete.as_view(), name='comment_delete_api'),
     #path('login/', Login.as_view()),
 
     #path('login/', Login.as_view()),

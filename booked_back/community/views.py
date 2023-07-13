@@ -22,7 +22,7 @@ class AllPostAPI(APIView):
         )
     
     def get(self, request):
-        post = Post.objects.all()
+        post = Post.objects.all().order_by('?')
         
         #독후감 랜덤으로 4개 가져오기
         reviews=BookReview.objects.order_by('?')[:4]
@@ -65,6 +65,7 @@ class PostCreate(APIView):
 # 게시글 조회 (Read)
 class PostRead(APIView):
     @swagger_auto_schema(
+        
         responses = {
             200: openapi.Response('게시글 조회 성공', PostSerializer)
         }
@@ -75,6 +76,42 @@ class PostRead(APIView):
         
         postserializer = PostSerializer(post)
         return Response(postserializer.data, status=200)
+    
+    
+    permission_classes = [IsAuthenticated]
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'content': openapi.Schema(type=openapi.TYPE_STRING, description='댓글 내용')
+            }
+        ),
+        responses={
+            200: openapi.Response('댓글 작성 성공', CommentSerializer),
+            404: openapi.Response('게시글이 존재하지 않음')
+        }
+    )
+    
+    
+    def post(self, request, pk):
+        data = request.data
+
+        try:
+            post = Post.objects.get(pk=pk)  # 게시글 객체 가져오기
+
+            comment = Comment()
+            comment.post = post
+            comment.content = data.get("content")
+            comment.commenter = request.user
+
+            comment.save()  # 댓글 저장
+
+            serializer = CommentSerializer(comment)
+            return Response(serializer.data, status=200)
+        except Post.DoesNotExist:
+            return Response({"message": "게시글이 존재하지 않습니다."}, status=404)
+        
+    
 
 # 게시글 수정 (Update)
 class PostUpdate(APIView):
