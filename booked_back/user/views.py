@@ -20,6 +20,25 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
+class MyMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # 사용자 인증 후, 세션에 정보 저장하기
+        if request.user.is_authenticated:
+            request.session['user_info'] = {
+                'userID': request.user.userID,
+                'password': request.user.password,
+                'nickname': request.user.nickname,
+                'user_mbti': request.user.user_mbti,
+                'image': request.user.image,
+            }
+
+        response = self.get_response(request)
+
+        return response
+
 class SignupAPIView(APIView):
     @swagger_auto_schema(
         request_body=openapi.Schema(
