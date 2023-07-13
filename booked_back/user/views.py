@@ -7,6 +7,8 @@ from .serializers import ProfileSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated
 from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from community.models import *
 from community.serializers import *
@@ -58,7 +60,7 @@ class LoginAPIView(APIView):
                 401: openapi.Response('로그인 실패')
             }
         )
-    
+    @method_decorator(csrf_exempt)
     def post(self, request):
         userID = request.data.get('userID')
         password = request.data.get('password')
@@ -67,9 +69,18 @@ class LoginAPIView(APIView):
             login(request, user)
             serializer = ProfileSerializer(user)
             #return Response(serializer.data, status=status.HTTP_200_OK)
+            session=request.session.session_key
+            csrf=get_token(request)
         
         # 세션 ID와 CSRF 토큰을 응답에 포함시킴
-            response = Response(serializer.data, status=status.HTTP_200_OK)
+            data={
+                
+                "userinfo":serializer.data,
+                "sessionid":session,
+                "csrftoken":csrf
+            }
+        
+            response = Response(data, status=status.HTTP_200_OK)
             response["X-CSRFToken"] = get_token(request)
             response["Set-Cookie"] = f"sessionid={request.session.session_key}; Path=/; HttpOnly"
 
