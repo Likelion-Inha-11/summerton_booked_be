@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib import auth
 
 from community.models import *
 from community.serializers import *
@@ -20,6 +21,39 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
+
+class LoginTempUser(APIView):
+    @swagger_auto_schema(tags=['자동 유저 로그인'], responses={200: 'Success'})
+    def get(self, request):
+        username = "ssang"
+        password = "12341234q"        
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            serializer = ProfileSerializer(user)
+            refresh1 = RefreshToken.for_user(user)
+            refresh=str(refresh1)
+            refreshtoken=str(refresh1.access_token)
+            session=request.session.session_key
+            csrf=get_token(request)
+             # 세션 ID와 CSRF 토큰을 응답에 포함시킴
+            data={
+                
+                "userinfo":serializer.data,
+                "sessionid":session,
+                "csrftoken":csrf,
+                "refresh":refresh,
+                "refreshtoken":refreshtoken
+            }
+        
+            response = Response(data, status=status.HTTP_200_OK)
+            response["X-CSRFToken"] = get_token(request)
+            response["Set-Cookie"] = f"sessionid={request.session.session_key}; Path=/; HttpOnly"
+
+            return response
+        else:
+            return Response({"error": "Invalid credentials"}, status=400)
+        
 class MyMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -34,6 +68,8 @@ class MyMiddleware:
                 'user_mbti': request.user.user_mbti,
                 'image': request.user.image,
             }
+            
+            
 
         response = self.get_response(request)
 

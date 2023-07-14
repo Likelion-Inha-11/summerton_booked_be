@@ -42,9 +42,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('mypage/', MypageAPIView.as_view(), name='mypage'),
     path('signup/', SignupAPIView.as_view(), name='signup'),
-    path('login/', LoginAPIView.as_view(), name='login'),
+    #path('login/', LoginAPIView.as_view(), name='login'),
+    path('login/',LoginTempUser.as_view(),name='autologin'),
     path('logout/', LogoutAPIView.as_view(), name='logout'),
     path('mypage/modify/', MypageModifyAPIView.as_view(), name='mypagemodify'),
+    #path('loginautouser/', LoginTempUser.as_view(),name='autologin'),
 
     path('mypage/posts/', MyPostsAPIView.as_view(), name='myposts'),
     path('mypage/comments/', MyCommentsAPIView.as_view(), name='mycomments'),
