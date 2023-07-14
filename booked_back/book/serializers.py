@@ -49,11 +49,6 @@ class BookReviewSerializer(serializers.ModelSerializer):
         return obj.user.nickname
     
            
-
-class BookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Book
-        fields='__all__'
         
         
 class GenreCountSerializer(serializers.ModelSerializer):
@@ -85,11 +80,67 @@ class JPCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = JPCount
         fields = ['book','mention_count']
+        
+        
+class BookSerializer(serializers.ModelSerializer):
+    genre=serializers.StringRelatedField(many=True)
+    ei=serializers.StringRelatedField(many=True)
+    ns=serializers.StringRelatedField(many=True)
+    ft=serializers.StringRelatedField(many=True)
+    jp=serializers.StringRelatedField(many=True)
+    fellings=serializers.StringRelatedField(many=True)
+    class Meta:
+        model=Book
+        fields='__all__'
+        
+    def get_genre(self, obj):
+        return obj.genre.name
+    
+    def get_ei(self, obj):
+        return obj.ei.name
+    
+    def get_ns(self, obj):
+        return obj.ns.name
+    
+    def get_ft(self, obj):
+        return obj.ft.name
+    
+    def get_jp(self, obj):
+        return obj.jp.name
+    
+    def get_fellings(self, obj):
+        return obj.fellings.name
 
 class BookRecommendationSerializer(serializers.Serializer):
     category = serializers.ChoiceField(choices=['장르', '감정', 'EI', 'NS', 'FT', 'JP'])
     field = serializers.CharField(max_length=255)
+    #genre=serializers.SerializerMethodField()
+    #ei=serializers.SerializerMethodField()
+    #ns=serializers.SerializerMethodField()
+    #ft=serializers.SerializerMethodField()
+    #jp=serializers.SerializerMethodField()
+    #fellings=serializers.SerializerMethodField()
+    
+    
+    def get_genre(self, obj):
+        return obj.genre.name
+    
+    def get_ei(self, obj):
+        return obj.ei.name
+    
+    def get_ns(self, obj):
+        return obj.ns.name
+    
+    def get_ft(self, obj):
+        return obj.ft.name
+    
+    def get_jp(self, obj):
+        return obj.jp.name
+    
+    def get_fellings(self, obj):
+        return obj.fellings.name
 
+    
     def to_representation(self, instance):
         category = instance['category']
         field = instance['field']
@@ -98,21 +149,27 @@ class BookRecommendationSerializer(serializers.Serializer):
         if category == '장르':
             genre_counts = GenreCount.objects.filter(category__name=field, mention_count__gte=2)
             filtered_books = [genre_count.book for genre_count in genre_counts]
+            genre=serializers.SerializerMethodField()
         elif category == '감정':
             feeling_counts = FillingCount.objects.filter(category__name=field, mention_count__gte=2)
             filtered_books = [feeling_count.book for feeling_count in feeling_counts]
+            fellings=serializers.SerializerMethodField()
         elif category == 'EI':
             ei_counts = EICount.objects.filter(category__name=field, mention_count__gte=2)
             filtered_books = [ei_count.book for ei_count in ei_counts]
+            ei=serializers.SerializerMethodField()
         elif category == 'NS':
             ns_counts = NSCount.objects.filter(category__name=field, mention_count__gte=2)
             filtered_books = [ns_count.book for ns_count in ns_counts]
+            ns=serializers.SerializerMethodField()
         elif category == 'FT':
             ft_counts = FTCount.objects.filter(category__name=field, mention_count__gte=2)
             filtered_books = [ft_count.book for ft_count in ft_counts]
+            ft=serializers.SerializerMethodField()
         elif category == 'JP':
             jp_counts = JPCount.objects.filter(category__name=field, mention_count__gte=2)
             filtered_books = [jp_count.book for jp_count in jp_counts]
+            jp=serializers.SerializerMethodField()
 
         book_serializer = BookSerializer(filtered_books, many=True)
         return book_serializer.data

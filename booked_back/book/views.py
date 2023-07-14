@@ -297,7 +297,7 @@ class BookReviewDeleteAPI(APIView):
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-        profile = Profile.objects.get(userID="ssang")
+        profile =  Profile.objects.get(userID="ssang")
         if not profile:
             return Response({'error': 'User profile not found'}, status=400)
 
