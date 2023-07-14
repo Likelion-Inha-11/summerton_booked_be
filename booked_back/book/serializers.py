@@ -121,53 +121,33 @@ class BookRecommendationSerializer(serializers.Serializer):
     #jp=serializers.SerializerMethodField()
     #fellings=serializers.SerializerMethodField()
     
-    
-    def get_genre(self, obj):
-        return obj.genre.name
-    
-    def get_ei(self, obj):
-        return obj.ei.name
-    
-    def get_ns(self, obj):
-        return obj.ns.name
-    
-    def get_ft(self, obj):
-        return obj.ft.name
-    
-    def get_jp(self, obj):
-        return obj.jp.name
-    
-    def get_fellings(self, obj):
-        return obj.fellings.name
-
-    
     def to_representation(self, instance):
         category = instance['category']
         field = instance['field']
         filtered_books = []
 
         if category == '장르':
-            genre_counts = GenreCount.objects.filter(category__name=field, mention_count__gte=2)
+            genre_counts = GenreCount.objects.filter(category__name=field, mention_count__gte=1)
             filtered_books = [genre_count.book for genre_count in genre_counts]
             genre=serializers.SerializerMethodField()
         elif category == '감정':
-            feeling_counts = FillingCount.objects.filter(category__name=field, mention_count__gte=2)
+            feeling_counts = FillingCount.objects.filter(category__name=field, mention_count__gte=1)
             filtered_books = [feeling_count.book for feeling_count in feeling_counts]
             fellings=serializers.SerializerMethodField()
         elif category == 'EI':
-            ei_counts = EICount.objects.filter(category__name=field, mention_count__gte=2)
+            ei_counts = EICount.objects.filter(category__name=field, mention_count__gte=1)
             filtered_books = [ei_count.book for ei_count in ei_counts]
             ei=serializers.SerializerMethodField()
         elif category == 'NS':
-            ns_counts = NSCount.objects.filter(category__name=field, mention_count__gte=2)
+            ns_counts = NSCount.objects.filter(category__name=field, mention_count__gte=1)
             filtered_books = [ns_count.book for ns_count in ns_counts]
             ns=serializers.SerializerMethodField()
         elif category == 'FT':
-            ft_counts = FTCount.objects.filter(category__name=field, mention_count__gte=2)
+            ft_counts = FTCount.objects.filter(category__name=field, mention_count__gte=1)
             filtered_books = [ft_count.book for ft_count in ft_counts]
             ft=serializers.SerializerMethodField()
         elif category == 'JP':
-            jp_counts = JPCount.objects.filter(category__name=field, mention_count__gte=2)
+            jp_counts = JPCount.objects.filter(category__name=field, mention_count__gte=1)
             filtered_books = [jp_count.book for jp_count in jp_counts]
             jp=serializers.SerializerMethodField()
 
