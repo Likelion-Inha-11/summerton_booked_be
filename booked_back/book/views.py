@@ -4,10 +4,14 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from .models import *
 from .serializers import BookReviewSerializer,BookRecommendationSerializer,BookSerializer
+from user.serializers import *
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib import auth
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.middleware.csrf import get_token
 
 
 from drf_yasg.utils import swagger_auto_schema
@@ -25,11 +29,23 @@ class BookReviewAPI(APIView):
     
     @method_decorator(csrf_exempt)
     def get(self, request,format=None):
-        profile = request.user
-        if not profile:
+        #profile = request.user
+        username = "ssang"
+        password = "12341234q"        
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            serializer = ProfileSerializer(user)
+            refresh1 = RefreshToken.for_user(user)
+            refresh=str(refresh1)
+            refreshtoken=str(refresh1.access_token)
+            session=request.session.session_key
+            csrf=get_token(request)
+             # 세션 ID와 CSRF 토큰을 응답에 포
+        if not user:
             return Response({'error': 'User profile not found'}, status=400)
 
-        book_reviews = BookReview.objects.filter(user=profile)
+        book_reviews = BookReview.objects.filter(user=user)
         serializer = BookReviewSerializer(book_reviews, many=True)
         return Response(serializer.data, status=200)
 
