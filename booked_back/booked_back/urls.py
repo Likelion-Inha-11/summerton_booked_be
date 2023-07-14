@@ -63,7 +63,7 @@ urlpatterns = [
     
     path('posts/', AllPostAPI.as_view(), name='post_api'),
     path('posts/create/', PostCreate.as_view(), name='post_create_api'),
-    path('posts/<int:pk>/', PostRead.as_view(), name='post_detail_api'),
+    path('posts/<int:pk>/', PostRead.as_view(), name='post_detail_api'), #게시글 상세보기
     path('posts/<int:pk>/update/', PostUpdate.as_view(), name='post_update_api'),
     path('posts/<int:pk>/delete/', PostDelete.as_view(), name='post_delete_api'),
     path('posts/comments/<int:pk>/delete/', CommentDelete.as_view(), name='comment_delete_api'),

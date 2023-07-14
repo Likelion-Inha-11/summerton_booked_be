@@ -37,9 +37,9 @@ class JP(models.Model):
     
 class Book(models.Model):
     title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
+    author = models.CharField(max_length=255,null=True,blank=True)
     genre=models.ManyToManyField(Genre,through="GenreCount",related_name='books')
-    description = models.TextField()
+    description = models.TextField(null=True,blank=True)
     ei=models.ManyToManyField(EI,through="EICount",related_name='books')
     ns=models.ManyToManyField(NS,through="NSCount",related_name='books')
     ft=models.ManyToManyField(FT,through="FTCount",related_name='books')
@@ -61,7 +61,7 @@ class BookReview(models.Model):
     ns = models.ForeignKey(NS, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
     ft = models.ForeignKey(FT, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
     jp = models.ForeignKey(JP, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
-    content = models.TextField()
+    content = models.TextField(null=True,blank=True)
     #created_at = models.DateField(auto_now_add=False,null=True,blank=True) #읽은 날짜 자동설정 말고 입력할 수 있게
     updated_at = models.DateTimeField(auto_now=True)  # 필요없
     like=models.ManyToManyField(Profile,related_name='likes',blank=True)
