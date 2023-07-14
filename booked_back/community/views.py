@@ -60,7 +60,7 @@ class PostCreate(APIView):
         
         post.title=request.data["title"]
         post.content=request.data["content"]
-        post.poster=request.user
+        post.poster=Profile.objects.get(userID="ssang")
         # post.created_at=request.data["created_at"]
         post.save()
         
@@ -107,7 +107,7 @@ class PostRead(APIView):
             comment = Comment()
             comment.post = post
             comment.content = data.get("content")
-            comment.commenter = request.user
+            comment.commenter = Profile.objects.get(userID="ssang")
 
             comment.save()  # 댓글 저장
 
@@ -173,7 +173,7 @@ class CommentCreate(APIView):
 
         comment.post = request.data["post"]
         comment.content = request.data["content"]
-        comment.commenter = request.user
+        comment.commenter = Profile.objects.get(userID="ssang")
         # comment.created_at=request.data["created_at"]
 
         commentserializer=CommentSerializer(comment)

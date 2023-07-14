@@ -76,9 +76,15 @@ class BookReviewCreateAPI(APIView):
             }
         )
     
+    
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
-        profile = request.user
+        username = "ssang"
+        password = "12341234q"        
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+        profile = Profile.objects.get(userID="ssang")
         data = request.data
         review_title = data.get('review_title')
         book_title = data.get('book_title')
@@ -152,7 +158,12 @@ class BookReviewDetailAPI(APIView):
     @method_decorator(csrf_exempt)
     #좋아요
     def post(self, request, pk, format=None):
-        profile = request.user
+        username = "ssang"
+        password = "12341234q"        
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+        profile = Profile.objects.get(userID="ssang")
         if not profile:
             return Response({'error': 'User profile not found'}, status=400)
 
@@ -173,7 +184,12 @@ class BookReviewUpdateAPI(APIView):
     @method_decorator(csrf_exempt)
     # 수정할 독후감 불러오기
     def get(self, request,pk,format=None):
-        profile = request.user
+        username = "ssang"
+        password = "12341234q"        
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+        profile = Profile.objects.get(userID="ssang")
         if not profile:
             return Response({'error': 'User profile not found'}, status=400)
 
@@ -209,7 +225,12 @@ class BookReviewUpdateAPI(APIView):
     @method_decorator(csrf_exempt)
     # PUT 메서드 추가
     def put(self, request, pk, format=None):
-        profile = request.user
+        username = "ssang"
+        password = "12341234q"        
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+        profile = Profile.objects.get(userID="ssang")
         if not profile:
             return Response({'error': 'User profile not found'}, status=400)
 
@@ -271,7 +292,12 @@ class BookReviewDeleteAPI(APIView):
     @method_decorator(csrf_exempt)
     # 독후감 삭제
     def delete(self, request, pk, format=None):
-        profile = request.user
+        username = "ssang"
+        password = "12341234q"        
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+        profile = Profile.objects.get(userID="ssang")
         if not profile:
             return Response({'error': 'User profile not found'}, status=400)
 

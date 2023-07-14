@@ -25,17 +25,20 @@ from drf_yasg import openapi
 class LoginTempUser(APIView):
     @swagger_auto_schema(tags=['자동 유저 로그인'], responses={200: 'Success'})
     def get(self, request):
+        suser = Profile.objects.get(userID="ssang")
+        #print(suser)
         username = "ssang"
         password = "12341234q"        
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            serializer = ProfileSerializer(user)
-            refresh1 = RefreshToken.for_user(user)
+            serializer = ProfileSerializer(suser)
+            refresh1 = RefreshToken.for_user(suser)
             refresh=str(refresh1)
             refreshtoken=str(refresh1.access_token)
             session=request.session.session_key
             csrf=get_token(request)
+            
              # 세션 ID와 CSRF 토큰을 응답에 포함시킴
             data={
                 
@@ -171,7 +174,7 @@ class MypageAPIView(APIView):
     
     @method_decorator(csrf_exempt)
     def get(self,request):
-        user = request.user
+        user = Profile.objects.get(userID="ssang")
         profile = user
 
         serializer = ProfileSerializer(profile)
@@ -195,7 +198,7 @@ class MypageModifyAPIView(APIView):
 
     @method_decorator(csrf_exempt)
     def put(self, request):
-        user = request.user
+        user = Profile.objects.get(userID="ssang")
         profile = user # assuming you have a related_name for the profile field
 
         data = request.data
@@ -225,11 +228,11 @@ class MyPostsAPIView(APIView):
     
     @method_decorator(csrf_exempt)
     def get(self, request,format=None):
-        profile = request.user
+        profile = Profile.objects.get(userID="ssang")
         if not profile:
             return Response({'error': 'User profile not found'}, status=400)
 
-        my_posts = Post.objects.filter(poster=request.user)
+        my_posts = Post.objects.filter(poster=Profile.objects.get(userID="ssang"))
         serializer = PostSerializer(my_posts, many=True)
         return Response(serializer.data, status=200)
 
@@ -245,10 +248,10 @@ class MyCommentsAPIView(APIView):
     
     @method_decorator(csrf_exempt)
     def get(self, request,format=None):
-        profile = request.user
+        profile = Profile.objects.get(userID="ssang")
         if not profile:
             return Response({'error': 'User profile not found'}, status=400)
 
-        my_comments = Comment.objects.filter(commenter=request.user)
+        my_comments = Comment.objects.filter(commenter=Profile.objects.get(userID="ssang"))
         serializer = CommentSerializer(my_comments, many=True)
         return Response(serializer.data, status=200)
