@@ -50,17 +50,17 @@ class Book(models.Model):
     #user_mbti = models.ManyToManyField(Profile, through='UserMBTICount', related_name='books')   
     
 class BookReview(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='reviews')
-    review_title=models.CharField(max_length=255)
-    book_title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255,default="N")
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
+    review_title=models.CharField(max_length=255,null=True,blank=True)
+    book_title = models.CharField(max_length=255,null=True,blank=True)
+    author = models.CharField(max_length=255,default="N",null=True,blank=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='reviews')
-    feeling = models.ForeignKey(Feeling, on_delete=models.CASCADE, related_name='reviews')
-    ei = models.ForeignKey(EI, on_delete=models.CASCADE, related_name='reviews')
-    ns = models.ForeignKey(NS, on_delete=models.CASCADE, related_name='reviews')
-    ft = models.ForeignKey(FT, on_delete=models.CASCADE, related_name='reviews')
-    jp = models.ForeignKey(JP, on_delete=models.CASCADE, related_name='reviews')
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
+    feeling = models.ForeignKey(Feeling, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
+    ei = models.ForeignKey(EI, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
+    ns = models.ForeignKey(NS, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
+    ft = models.ForeignKey(FT, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
+    jp = models.ForeignKey(JP, on_delete=models.CASCADE, related_name='reviews',null=True,blank=True)
     content = models.TextField()
     #created_at = models.DateField(auto_now_add=False,null=True,blank=True) #읽은 날짜 자동설정 말고 입력할 수 있게
     updated_at = models.DateTimeField(auto_now=True)  # 필요없

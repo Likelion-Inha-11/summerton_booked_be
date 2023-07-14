@@ -57,6 +57,42 @@ class LoginTempUser(APIView):
         else:
             return Response({"error": "Invalid credentials"}, status=400)
         
+        
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        userID = request.data.get('userID')
+        password = request.data.get('password')
+        user = authenticate(request, username=userID, password=password) #권한인증
+        if user:
+            login(request, user)
+            serializer = ProfileSerializer(user)
+            #return Response(serializer.data, status=status.HTTP_200_OK)
+            refresh1 = RefreshToken.for_user(user)
+            refresh=str(refresh1)
+            refreshtoken=str(refresh1.access_token)
+            session=request.session.session_key
+            csrf=get_token(request)
+        
+        # 세션 ID와 CSRF 토큰을 응답에 포함시킴
+            data={
+                
+                "userinfo":serializer.data,
+                "sessionid":session,
+                "csrftoken":csrf,
+                "refresh":refresh,
+                "refreshtoken":refreshtoken
+            }
+        
+            response = Response(data, status=status.HTTP_200_OK)
+            response["X-CSRFToken"] = get_token(request)
+            response["Set-Cookie"] = f"sessionid={request.session.session_key}; Path=/; HttpOnly"
+
+            return response
+        return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        
+        
+        
 class MyMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
